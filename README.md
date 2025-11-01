@@ -7,7 +7,7 @@ A ComfyUI extension that helps users relink missing models in workflows using fu
 - Scans all nodes in workflows to find missing models
 - Uses fuzzy matching to suggest similar model files
 - Updates workflow JSON in UI/memory (user saves themselves)
-- Supports all node types (not just specific ones)
+- Supports all node types
 - Optional auto-resolve for 100% confidence matches
 
 ## Installation
