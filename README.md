@@ -22,7 +22,7 @@ A ComfyUI extension that helps users relink missing models in workflows using fu
 
 1. Open a workflow with missing models
 2. Click the "🔗 Model Linker" button in ComfyUI's top menu bar
-3. Review missing models and their suggested matches (with confidence scores)
+3. Review missing models and their suggested matches 
 4. Click "Resolve" for individual models or "Auto-Resolve 100% Matches" for perfect matches
 5. Save your workflow when ready
 
@@ -33,11 +33,3 @@ A ComfyUI extension that helps users relink missing models in workflows using fu
 - **Fuzzy Matching**: Uses intelligent similarity scoring to find model files even with different naming
 - **Auto-Resolve**: One-click resolution for all perfect matches
 
-## Requirements
-
-- Python 3.8+
-- ComfyUI
-
-## License
-
-See LICENSE file for details.
