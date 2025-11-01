@@ -2,6 +2,8 @@
 
 A ComfyUI extension that helps users relink missing models in workflows using fuzzy matching.
 
+![Model Linker Interface](model-linker.png)
+
 ## Features
 
 - Scans all nodes in workflows to find missing models
@@ -39,4 +41,3 @@ A ComfyUI extension that helps users relink missing models in workflows using fu
 ## License
 
 See LICENSE file for details.
-
