@@ -253,6 +253,7 @@ class LinkerManagerDialog extends ComfyDialog {
         container.innerHTML = html;
 
         // Attach event listeners for resolve buttons (use sorted order)
+        // Note: We need to match the exact same logic as renderMissingModel to find which buttons were rendered
         sortedMissingModels.forEach((missing, missingIndex) => {
             const allMatches = missing.matches || [];
             
@@ -261,15 +262,33 @@ class LinkerManagerDialog extends ComfyDialog {
             
             // Filter to only 100% matches if available, otherwise use filtered matches (>=70%)
             const perfectMatches = filteredMatches.filter(m => m.confidence === 100);
-            const matchesToUse = perfectMatches.length > 0 ? perfectMatches : filteredMatches;
+            const otherMatches = filteredMatches.filter(m => m.confidence < 100 && m.confidence >= 70);
             
-            matchesToUse.forEach((match, matchIndex) => {
-                const buttonId = `resolve-${missing.node_id}-${missing.widget_index}-${matchIndex}`;
-                const resolveButton = container.querySelector(`#${buttonId}`);
-                if (resolveButton) {
-                    resolveButton.addEventListener('click', () => {
-                        this.resolveModel(missing, match.model);
-                    });
+            // Match the same logic as renderMissingModel
+            const matchesToShow = perfectMatches.length > 0 
+                ? perfectMatches 
+                : otherMatches.sort((a, b) => b.confidence - a.confidence).slice(0, 5);
+            
+            // Sort: 100% matches first, then by confidence descending (same as renderMissingModel)
+            const sortedMatches = matchesToShow.sort((a, b) => {
+                if (a.confidence === 100 && b.confidence !== 100) return -1;
+                if (a.confidence !== 100 && b.confidence === 100) return 1;
+                return b.confidence - a.confidence;
+            });
+            
+            // Find the highest confidence match (even if not 100%)
+            const highestConfidenceMatch = sortedMatches.length > 0 ? sortedMatches[0] : null;
+            
+            sortedMatches.forEach((match, matchIndex) => {
+                // Only attach listener if this match would have a button (100% or highest confidence)
+                if (match.confidence === 100 || match === highestConfidenceMatch) {
+                    const buttonId = `resolve-${missing.node_id}-${missing.widget_index}-${matchIndex}`;
+                    const resolveButton = container.querySelector(`#${buttonId}`);
+                    if (resolveButton) {
+                        resolveButton.addEventListener('click', () => {
+                            this.resolveModel(missing, match.model);
+                        });
+                    }
                 }
             });
         });
@@ -327,6 +346,9 @@ class LinkerManagerDialog extends ComfyDialog {
                 return b.confidence - a.confidence;
             });
             
+            // Find the highest confidence match (even if not 100%)
+            const highestConfidenceMatch = sortedMatches.length > 0 ? sortedMatches[0] : null;
+            
             for (let matchIndex = 0; matchIndex < sortedMatches.length; matchIndex++) {
                 const match = sortedMatches[matchIndex];
                 const buttonId = `resolve-${missing.node_id}-${missing.widget_index}-${matchIndex}`;
@@ -335,7 +357,8 @@ class LinkerManagerDialog extends ComfyDialog {
                 html += `<span style="color: ${match.confidence === 100 ? 'green' : 'orange'};">
                     (${match.confidence}% confidence)
                 </span>`;
-                if (match.confidence === 100) {
+                // Show resolve button for 100% matches OR for the highest confidence match (even if not 100%)
+                if (match.confidence === 100 || match === highestConfidenceMatch) {
                     html += ` <button id="${buttonId}" 
                         class="model-linker-resolve-btn" style="margin-left: 8px; padding: 4px 8px;">
                         Resolve
@@ -774,7 +797,8 @@ class ModelLinker {
                 textAlign: "center",
                 zIndex: "1000",
                 position: "relative",
-                transition: "all 0.2s ease"
+                transition: "all 0.2s ease",
+                whiteSpace: "nowrap"
             }
         });
 
@@ -824,7 +848,8 @@ class ModelLinker {
                 fontSize: "14px",
                 fontWeight: "600",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                transition: "all 0.2s ease"
+                transition: "all 0.2s ease",
+                whiteSpace: "nowrap"
             }
         });
 
