@@ -24,7 +24,7 @@ https://github.com/user-attachments/assets/fedf3645-aa66-49f7-b01d-8c3b5127faf4
 ## Usage
 
 1. Open a workflow with missing models
-2. Click the "ðŸ”— Model Linker" button in ComfyUI's top menu bar
+2. Click the "🔗 — Model Linker" button in ComfyUI's top menu bar
 3. Review missing models and their suggested matches 
 4. Click "Resolve" for individual models or "Auto-Resolve 100% Matches" for perfect matches
 5. Save your workflow when ready
